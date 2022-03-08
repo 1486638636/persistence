@@ -1,0 +1,8 @@
+<configuration>
+    <dataSource>
+        <property name="driverClass" value="com.mysql.jdbc.Driver"></property>
+        <property name="jdbcUrl" value="jdbc:mysql:///"></property><!--///表示本地数据库-->
+        <property name="username" value=""></property>
+        <property name="password" value=""></property>
+    </dataSource>
+</configuration>
