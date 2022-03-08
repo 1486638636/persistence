@@ -1,8 +1,12 @@
 <configuration>
+    <!--数据库配置信息-->
     <dataSource>
         <property name="driverClass" value="com.mysql.jdbc.Driver"></property>
-        <property name="jdbcUrl" value="jdbc:mysql:///"></property><!--///表示本地数据库-->
-        <property name="username" value=""></property>
-        <property name="password" value=""></property>
+        <property name="jdbcUrl" value="jdbc:mysql:///zdy_mybatis"></property><!--///表示本地数据库-->
+        <property name="username" value="root"></property>
+        <property name="password" value="root"></property>
     </dataSource>
+
+    <!--mapper.xml的全路径。将来在解析配置文件时可以只解析该配置文件获取数据库配置信息，并且通过读取sql配置文件路径，从而获取到sql文件对应得内容-->
+    <mapper resource="UserMapper.xml" />
 </configuration>

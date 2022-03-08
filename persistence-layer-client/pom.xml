@@ -10,5 +10,12 @@
 
 
     <!--引入自定义持久层框架jar包-->
+    <dependencies>
+        <dependency>
+            <groupId>com.study.ch</groupId>
+            <artifactId>persistence-layer-framework</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+    </dependencies>
 
 </project>

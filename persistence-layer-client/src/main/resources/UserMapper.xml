@@ -1,0 +1,9 @@
+<mapper namespace="com.study.ch.dto.User">
+    <select id="selectList" resultType="com.study.ch.dto.User">
+        select * from t_user
+    </select>
+
+    <select id="selectOne" parameterType="com.study.ch.dto.User" resultType="com.study.ch.dto.User">
+        select * from t_user where id = #{id} and name=#{name}
+    </select>
+</mapper>
