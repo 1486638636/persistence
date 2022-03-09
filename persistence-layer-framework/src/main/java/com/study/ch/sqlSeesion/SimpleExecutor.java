@@ -8,8 +8,11 @@ import com.study.ch.utils.ParameterMapping;
 import com.study.ch.utils.ParameterMappingTokenHandler;
 
 import javax.sql.DataSource;
-import java.sql.Connection;
-import java.sql.SQLException;
+import java.beans.PropertyDescriptor;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.sql.*;
+import java.util.ArrayList;
 import java.util.List;
 
 public class SimpleExecutor implements Executor{
@@ -23,16 +26,61 @@ public class SimpleExecutor implements Executor{
         String sqlText = mappedStatement.getSqlText();
         BoundSql boundSql = getBoundSql(sqlText);
         //step3.获取预处理对象prepareStatement
-        connection.prepareStatement(boundSql.getSqlText());
+        PreparedStatement preparedStatement = connection.prepareStatement(boundSql.getSqlText());
         //step4.参数设置
+        String parameterType = mappedStatement.getParameterType();//参数全路径
+        Class<?> parameterTypeClass = getClassType(parameterType);
 
+        List<ParameterMapping> parameterMappingList = boundSql.getParameterMappingList();
+        for (int i = 0; i < parameterMappingList.size(); i++) {
+            ParameterMapping parameterMapping = parameterMappingList.get(i);
+            String content = parameterMapping.getContent();
+            //使用反射通过parameterTypeClass获取对应属性值得类型
+            Field declaredField = parameterTypeClass.getDeclaredField(content);
+            declaredField.setAccessible(true);//防止属性是私有的，设置暴力访问
+            Object val = declaredField.get(params[0]);//params是数组，传进来的只是一个user对象，所以params[0]就是传进来的对象
+            //设置参数时，下标应该从1开始
+            preparedStatement.setObject(i+1, val);
+        }
         //step5.执行sql
-
+        ResultSet resultSet = preparedStatement.executeQuery();
         //step6.封装结果集
+        String resultType = mappedStatement.getResultType();
+        Class<?> resultTypeClass = getClassType(resultType);
 
+        List<Object> list = new ArrayList<Object>();
+        while (resultSet.next()){
+            Object o = resultTypeClass.newInstance();
+            //元数据
+            ResultSetMetaData metaData = resultSet.getMetaData();
+            for (int i = 1; i <= metaData.getColumnCount(); i++) {
+                //字段名
+                String columnName = metaData.getColumnName(i);
+                //字段值
+                Object value = resultSet.getObject(columnName);
+                //使用反射或内省，根据数据库表和实体的对应关系，完成封装
+                PropertyDescriptor propertyDescriptor = new PropertyDescriptor(columnName, resultTypeClass);
+                Method writeMethod = propertyDescriptor.getWriteMethod();
+                System.out.println("value="+value+"columnName="+columnName);
+                writeMethod.invoke(o, value);
+            }
+            list.add(o);
+        }
+        return (List<E>) list;
+    }
 
-
-        return null;
+    /**
+     * 通过类路径获取类的Class对象，提供反射所需的一系列api
+     * @param parameterType
+     * @return
+     * @throws ClassNotFoundException
+     */
+    private Class<?> getClassType(String parameterType) throws ClassNotFoundException {
+        if(parameterType == null){
+            return null;
+        }
+        Class<?> aClass = Class.forName(parameterType);
+        return aClass;
     }
 
     /**

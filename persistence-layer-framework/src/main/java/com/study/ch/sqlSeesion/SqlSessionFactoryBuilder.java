@@ -15,7 +15,7 @@ public class SqlSessionFactoryBuilder {
         DefaultSqlSessionFactory defaultSqlSessionFactory = new DefaultSqlSessionFactory(configuration);
 
 
-        return null;
+        return defaultSqlSessionFactory;
 
     }
 }

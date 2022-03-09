@@ -17,9 +17,9 @@ public class DefaultSqlSession implements SqlSession {
         //将要去完成对simpleExecutor里的query方法调用
         SimpleExecutor simpleExecutor = new SimpleExecutor();
         MappedStatement mappedStatement = configuration.getMappedStatementMap().get(statementId);
-        simpleExecutor.query(configuration, mappedStatement, params);
+        List<Object> list = simpleExecutor.query(configuration, mappedStatement, params);
 
-        return null;
+        return (List<T>) list;
     }
 
     public <T> T selectOne(String statementId, Object... params) throws Exception {

@@ -1,8 +1,8 @@
 <configuration>
     <!--数据库配置信息-->
     <dataSource>
-        <property name="driverClass" value="com.mysql.jdbc.Driver"></property>
-        <property name="jdbcUrl" value="jdbc:mysql:///zdy_mybatis"></property><!--///表示本地数据库-->
+        <property name="driverClass" value="com.mysql.cj.jdbc.Driver"></property>
+        <property name="jdbcUrl" value="jdbc:mysql:///zdy_mybatis?useUnicode=true&amp;characterEncoding=utf-8"></property><!--///表示本地数据库-->
         <property name="username" value="root"></property>
         <property name="password" value="root"></property>
     </dataSource>
